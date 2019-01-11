@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Francisco Javier Luna-Vázquez" />
+
+<meta name="date" content="2019-01-06" />
+
+<title>Fit the BMORS model for one environment of Maize dataset</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Fit the BMORS model for one environment of Maize dataset</h1>
+<h4 class="author"><em>Francisco Javier Luna-Vázquez</em></h4>
+<h4 class="date"><em>2019-01-06</em></h4>
+
+
+
+<p>This example shows how to evaluate prediction performance with multiple environments and traits in one single environment, using a <code>BMORS_Env</code> function. To do this, the MaizeToy dataset is used which is also available in the BMTME package, and it is loaded with the <code>data()</code> function as shown below:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(BMTME)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">data</span>(<span class="st">&#39;MaizeToy&#39;</span>)</a></code></pre></div>
+<p>With this command, you load the following 2 objects into the R environment: - <code>genoMaizeToy</code>: Genomic matrix of the dataset. - <code>phenoMaizeToy</code>: Phenotypic data from the dataset.</p>
+<p>Remember that the first step that we need do, is order the dataset as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">phenoMaizeToy &lt;-<span class="st"> </span>phenoMaizeToy[<span class="kw">order</span>(phenoMaizeToy<span class="op">$</span>Env, phenoMaizeToy<span class="op">$</span>Line),]</a></code></pre></div>
+<p>The model to be implemented must be defined and next the matrix design required are obtained with the following code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">LG &lt;-<span class="st"> </span><span class="kw">cholesky</span>(genoMaizeToy)</a>
+<a class="sourceLine" id="cb3-2" title="2">ZG &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoMaizeToy<span class="op">$</span>Line))</a>
+<a class="sourceLine" id="cb3-3" title="3">Z.G &lt;-<span class="st"> </span>ZG <span class="op">%*%</span><span class="st"> </span>LG</a></code></pre></div>
+<p>Once the matrix design has been generated, the linear predictor is constructed, for this purpose, a new object is created that we call <code>ETA</code> that consist of a series of nested lists as shown below,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ETA &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Gen =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.G, <span class="dt">model =</span> <span class="st">&#39;BRR&#39;</span>))</a></code></pre></div>
+<p>Next, we obtain the dataset with the first column with the environments and the others are the phenotypic matrix, this can be done with the following code,</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">dataset &lt;-<span class="st"> </span>phenoMaizeToy[, <span class="dv">2</span><span class="op">:</span><span class="dv">5</span>] <span class="co">#Must Include in the first column the environments</span></a></code></pre></div>
+<p>Finally, the model will be implemented, and for demonstration purposes only 2000 iterations are used to fit the model. In addition, we will show the resulting predictive performance using the <code>summary()</code> function. For this example, we only use the environment <code>EBU</code> to check the predictive capacities of the model and use the <code>covModel = &#39;BRR&#39;</code> to specify the Bayes model to be used, by default is Bayes Ridge-Regression, so this parameter could be omitted.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">pm &lt;-<span class="st"> </span><span class="kw">BMORS_Env</span>(dataset, <span class="dt">testingEnv =</span> <span class="st">&#39;EBU&#39;</span>, <span class="dt">ETA =</span> ETA, <span class="dt">covModel =</span> <span class="st">&#39;BRR&#39;</span>, <span class="dt">nIter =</span> <span class="dv">2000</span>, </a>
+<a class="sourceLine" id="cb6-2" title="2">                  <span class="dt">burnIn =</span> <span class="dv">1000</span>, <span class="dt">thin =</span> <span class="dv">2</span>, <span class="dt">progressBar =</span> <span class="ot">TRUE</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw">summary</span>(pm)</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt;   Environment Trait Pearson  MAAPE</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; 1         EBU Yield  0.3127 0.1878</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt; 2         EBU   ASI -0.0294 0.3817</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt; 3         EBU    PH  0.0384 0.0695</span></a></code></pre></div>
+<p>To obtain a graph with the Pearson´s correlation or the model we use the <code>barplot()</code> function, as shown below, s</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">barplot</span>(pm)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>In this figure we can observe that the lowest Pearson´s correlation obtained was observed in the ASI_EBU trait-environment, while the highest Pearson´s correlation obtained in the predictive capacity is observed in the Yield_EBU trait-environment. If we need recover the predicted values, we could call the results from the object.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">head</span>(pm<span class="op">$</span>results, <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt;   Position Environment Trait Observed Predicted</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; 1        1         EBU Yield     6.88     5.423</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 2        2         EBU Yield     6.85     5.785</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 3        3         EBU Yield     6.37     6.021</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 4        4         EBU Yield     4.98     6.564</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 5        5         EBU Yield     7.07     5.835</span></a></code></pre></div>
+<p>Where the Position column, corresponds to the original position in the dataset.</p>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

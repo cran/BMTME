@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Francisco Javier Luna-Vázquez" />
+
+<meta name="date" content="2019-01-06" />
+
+<title>Fit the Bayesian Multi-Output Regression Stacking model using the maize dataset and apply a random partition cross-validation</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Fit the Bayesian Multi-Output Regression Stacking model using the maize dataset and apply a random partition cross-validation</h1>
+<h4 class="author"><em>Francisco Javier Luna-Vázquez</em></h4>
+<h4 class="date"><em>2019-01-06</em></h4>
+
+
+
+<p>This example shows how to evaluate prediction accuracy with multiple environments and multiple traits using a random partition as cross validation. The WheatToy data set available in the <code>BMTME</code> package and next is loaded using the <code>data()</code> function as shown below:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(BMTME)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">data</span>(<span class="st">&#39;WheatToy&#39;</span>)</a></code></pre></div>
+<p>With this command, you load the following 2 objects into the R environment:</p>
+<ul>
+<li><code>genoWheatToy</code>: Genomic matrix of the dataset.</li>
+<li><code>phenoWheatToy</code>: Phenotypic data from the dataset.</li>
+</ul>
+<p>Since the data set includes multiple environments and multiple traits, the BMORS model could be used, also, for its implementation we will see three different designs for the linear predictor, Using only the (1) lines effect, (2) Environment and lines effect and (3) Environment, lines effect and the interaction of the environment with the lines effect. Remember that the first step that we need do, is order the dataset as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">phenoWheatToy &lt;-<span class="st"> </span>phenoWheatToy[<span class="kw">order</span>(phenoWheatToy<span class="op">$</span>Env, phenoWheatToy<span class="op">$</span>Gid),]</a></code></pre></div>
+<div id="linear-predictor-lines-effect" class="section level2">
+<h2>Linear predictor: Lines effect</h2>
+<p>To use only the effect of lines in the linear predictor, we will first occupy the matrix design of the lines, we can construct this with the following code,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">LG &lt;-<span class="st"> </span><span class="kw">cholesky</span>(genoWheatToy)</a>
+<a class="sourceLine" id="cb3-2" title="2">ZG &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Gid))</a>
+<a class="sourceLine" id="cb3-3" title="3">Z.G &lt;-<span class="st"> </span>ZG <span class="op">%*%</span><span class="st"> </span>LG</a></code></pre></div>
+<p>Once the matrix design has been generated, the linear predictor is constructed, for this purpose, a new object will be created that we will call <code>ETA</code>, that consist of a series of nested lists, where each sub list will contain one of the matrix designs, as well as the model with which this matrix will be modeled. In this case only contain the matrix design of the lines.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ETA &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Gen =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.G, <span class="dt">model =</span> <span class="st">&#39;BRR&#39;</span>))</a></code></pre></div>
+<p>Next, we provide some commands as pre-analysis for building the cross validation:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">pheno &lt;-<span class="st"> </span>phenoWheatToy[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)] <span class="co">#Use only the first trait to do a cv</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">colnames</span>(pheno) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Line&#39;</span>, <span class="st">&#39;Env&#39;</span>, <span class="st">&#39;Response&#39;</span>)</a></code></pre></div>
+<p>This is done because the cross validation that will be implemented assumes that for those lines that are selected as missing all traits are missed. The cross validation is implemented with random partitions, with the function: <code>CV.RandomPart()</code>, as shown below,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">CrossValidation &lt;-<span class="st"> </span><span class="kw">CV.RandomPart</span>(pheno, <span class="dt">NPartitions =</span> <span class="dv">4</span>, <span class="dt">PTesting =</span> <span class="fl">0.2</span>, <span class="dt">set_seed =</span> <span class="dv">123</span>)</a></code></pre></div>
+<p>Before making the adjustment of the model, the phenotype matrix is obtained, for this purpose we use the following code,</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">Y &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(phenoWheatToy[, <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">4</span>)])</a></code></pre></div>
+<p>Finally, the model is adjusted and for demonstration purposes only 5000 iterations are used to implement the model. In addition, we will show the information of the predictive capacity obtained in each trait for each evaluated environment using the summary() function.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">pm &lt;-<span class="st"> </span><span class="kw">BMORS</span>(Y, <span class="dt">ETA =</span> ETA, <span class="dt">nIter =</span> <span class="dv">5000</span>, <span class="dt">burnIn =</span> <span class="dv">2000</span>, <span class="dt">thin =</span> <span class="dv">2</span>, <span class="dt">progressBar =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb8-2" title="2">              <span class="dt">testingSet =</span> CrossValidation,  <span class="dt">digits =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="kw">summary</span>(pm)</a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt;   Environment Trait Pearson SE_Pearson  MAAPE SE_MAAPE</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 1      Bed2IR  DTHD  0.9673     0.0193 0.2844   0.0773</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 2      Bed2IR  PTHT -0.0140     0.2686 0.6591   0.0775</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 3      Bed5IR  DTHD  0.7978     0.1051 0.5031   0.0658</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 4      Bed5IR  PTHT -0.2917     0.2137 0.6165   0.0505</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 5        Drip  DTHD  0.9346     0.0383 0.8571   0.0945</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt; 6        Drip  PTHT  0.2360     0.1178 0.8872   0.0913</span></a></code></pre></div>
+</div>
+<div id="linear-predictor-environment-lines" class="section level2">
+<h2>Linear predictor: Environment + Lines</h2>
+<p>To use only the effect of the environments and lines in the linear predictor, we will first occupy the matrix design of the environment, we can construct this with the following code,</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">Z.E &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Env))</a></code></pre></div>
+<p>Once the matrix design has been generated, the linear predictor is constructed, for this purpose, a new object will be created that we will call <code>ETA2</code>, in this case contain the matrix design of the lines and the matrix design of the environment.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">ETA2 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Env =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.E, <span class="dt">model =</span> <span class="st">&quot;BRR&quot;</span>),</a>
+<a class="sourceLine" id="cb10-2" title="2">             <span class="dt">Gen =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.G, <span class="dt">model =</span> <span class="st">&#39;BRR&#39;</span>))</a></code></pre></div>
+<p>Finally, the model is adjusted and for demonstration purposes only 2000 iterations are used to implement the model. Remember that in the past section we construct the dataset object and the crossvalidation object, and we reuse that objects in this model.</p>
+<p>In addition, we will show the information of the predictive capacity obtained in each trait for each evaluated environment using the <code>summary()</code> function.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">pm &lt;-<span class="st"> </span><span class="kw">BMORS</span>(Y, <span class="dt">ETA =</span> ETA, <span class="dt">nIter =</span> <span class="dv">2000</span>, <span class="dt">burnIn =</span> <span class="dv">1000</span>, <span class="dt">thin =</span> <span class="dv">2</span>, <span class="dt">progressBar =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb11-2" title="2">              <span class="dt">testingSet =</span> CrossValidation,  <span class="dt">digits =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="kw">summary</span>(pm)</a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="co">#&gt;   Environment Trait Pearson SE_Pearson  MAAPE SE_MAAPE</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="co">#&gt; 1      Bed2IR  DTHD  0.9656     0.0208 0.2787   0.0753</span></a>
+<a class="sourceLine" id="cb11-6" title="6"><span class="co">#&gt; 2      Bed2IR  PTHT -0.0340     0.2919 0.6849   0.0780</span></a>
+<a class="sourceLine" id="cb11-7" title="7"><span class="co">#&gt; 3      Bed5IR  DTHD  0.8046     0.1006 0.5081   0.0618</span></a>
+<a class="sourceLine" id="cb11-8" title="8"><span class="co">#&gt; 4      Bed5IR  PTHT -0.2845     0.2191 0.6127   0.0496</span></a>
+<a class="sourceLine" id="cb11-9" title="9"><span class="co">#&gt; 5        Drip  DTHD  0.9336     0.0383 0.8579   0.0954</span></a>
+<a class="sourceLine" id="cb11-10" title="10"><span class="co">#&gt; 6        Drip  PTHT  0.1912     0.1039 0.8903   0.0869</span></a></code></pre></div>
+</div>
+<div id="linear-predictor-env-lines-envxlines" class="section level2">
+<h2>Linear predictor: Env + Lines + EnvXLines</h2>
+<p>And finally, to use only the effect of the environments and lines with the interaction effect of the environment with the lines in the linear predictor, we will first occupy the matrix design of the interaction, with the following code the construction of all the matrix designs are presented for easy understanding,</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># Line effect (section 3.1.1)</span></a>
+<a class="sourceLine" id="cb12-2" title="2">LG &lt;-<span class="st"> </span><span class="kw">cholesky</span>(genoWheatToy)</a>
+<a class="sourceLine" id="cb12-3" title="3">ZG &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Gid))</a>
+<a class="sourceLine" id="cb12-4" title="4">Z.G &lt;-<span class="st"> </span>ZG <span class="op">%*%</span><span class="st"> </span>LG</a>
+<a class="sourceLine" id="cb12-5" title="5"></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="co"># Environment effect (section 3.1.2)</span></a>
+<a class="sourceLine" id="cb12-7" title="7">Z.E &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Env))</a>
+<a class="sourceLine" id="cb12-8" title="8"></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="co">#Interaction effect</span></a>
+<a class="sourceLine" id="cb12-10" title="10">ZEG &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Gid)<span class="op">:</span><span class="kw">as.factor</span>(phenoWheatToy<span class="op">$</span>Env))</a>
+<a class="sourceLine" id="cb12-11" title="11">G2 &lt;-<span class="st"> </span><span class="kw">kronecker</span>(<span class="kw">diag</span>(<span class="kw">length</span>(<span class="kw">unique</span>(phenoWheatToy<span class="op">$</span>Env))), <span class="kw">data.matrix</span>(genoWheatToy))</a>
+<a class="sourceLine" id="cb12-12" title="12">LG2 &lt;-<span class="st"> </span><span class="kw">cholesky</span>(G2)</a>
+<a class="sourceLine" id="cb12-13" title="13">Z.EG &lt;-<span class="st"> </span>ZEG <span class="op">%*%</span><span class="st"> </span>LG2</a></code></pre></div>
+<p>Once the matrix design has been generated, the linear predictor is constructed, for this purpose, a new object will be created that we will call <code>ETA3</code>, in this case contain the effect of environment, lines and the interaction of both.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">ETA3 &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Env =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.E, <span class="dt">model =</span> <span class="st">&quot;BRR&quot;</span>),</a>
+<a class="sourceLine" id="cb13-2" title="2">             <span class="dt">Gen =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.G, <span class="dt">model =</span> <span class="st">&#39;BRR&#39;</span>),</a>
+<a class="sourceLine" id="cb13-3" title="3">             <span class="dt">EnvGen =</span> <span class="kw">list</span>(<span class="dt">X =</span> Z.EG, <span class="dt">model =</span> <span class="st">&quot;BRR&quot;</span>))</a></code></pre></div>
+<p>Finally, the model is adjusted and for demonstration purposes only 2000 iterations are used to implement the model. Remember that in the first section we construct the dataset object and the crossvalidation object, and we reuse that objects in this model.</p>
+<p>In addition, we will show the information of the predictive capacity obtained in each trait for each evaluated environment using the <code>summary()</code> function.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">pm &lt;-<span class="st"> </span><span class="kw">BMORS</span>(Y, <span class="dt">ETA =</span> ETA3, <span class="dt">nIter =</span> <span class="dv">2000</span>, <span class="dt">burnIn =</span> <span class="dv">1000</span>, <span class="dt">thin =</span> <span class="dv">2</span>, <span class="dt">progressBar =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb14-2" title="2">              <span class="dt">testingSet =</span> CrossValidation,  <span class="dt">digits =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="kw">summary</span>(pm)</a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="co">#&gt;   Environment Trait Pearson SE_Pearson  MAAPE SE_MAAPE</span></a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="co">#&gt; 1      Bed2IR  DTHD  0.9730     0.0148 0.2907   0.0551</span></a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="co">#&gt; 2      Bed2IR  PTHT  0.2248     0.2717 0.7814   0.0956</span></a>
+<a class="sourceLine" id="cb14-7" title="7"><span class="co">#&gt; 3      Bed5IR  DTHD  0.8239     0.0875 0.3506   0.0456</span></a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="co">#&gt; 4      Bed5IR  PTHT -0.0762     0.2346 0.5022   0.1277</span></a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="co">#&gt; 5        Drip  DTHD  0.9341     0.0367 0.4744   0.1012</span></a>
+<a class="sourceLine" id="cb14-10" title="10"><span class="co">#&gt; 6        Drip  PTHT  0.2484     0.2570 0.6758   0.0438</span></a></code></pre></div>
+<p>It is important to point out that it is possible to obtain a boxplot with the results using the following commands.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>)) <span class="co">#Bottom, Left, Top, Right</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">boxplot</span>(pm, <span class="dt">las =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>In this figure we can observe that the best average predictive accuracy is obtained with the trait-environment combination <code>DTHD_Drip</code>, while the lowest average predictive accuracy obtained was in the trait-environment <code>PTHT_Bed5IR</code>.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

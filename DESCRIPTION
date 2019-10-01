@@ -1,8 +1,8 @@
 Package: BMTME
 Title: Bayesian Multi-Trait Multi-Environment for Genomic Selection
         Analysis
-Version: 1.0.10
-Date: 2019-9-25
+Version: 1.0.11
+Date: 2019-9-30
 Language: en-US
 Authors@R: c(person("Francisco Javier", "Luna-Vazquez", email = "frahik@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-5370-7152")),
              person("Fernando H.", "Toledo", role = "aut"),
@@ -29,7 +29,7 @@ Imports: BGLR, doSNOW, dplyr, foreach, matrixcalc, mvtnorm, progress,
 LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: C++11, GNU
 Suggests: covr, testthat,
-Packaged: 2019-09-25 20:52:32 UTC; frahik
+Packaged: 2019-09-30 18:14:33 UTC; frahik
 Author: Francisco Javier Luna-Vazquez [aut, cre]
     (<https://orcid.org/0000-0002-5370-7152>),
   Fernando H. Toledo [aut],
@@ -38,4 +38,4 @@ Author: Francisco Javier Luna-Vazquez [aut, cre]
   Abelardo Montesinos-Lopez [aut],
   Jose Crossa [aut] (<https://orcid.org/0000-0001-9429-5855>)
 Repository: CRAN
-Date/Publication: 2019-09-26 15:30:10 UTC
+Date/Publication: 2019-10-01 18:50:09 UTC

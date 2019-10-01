@@ -1,6 +1,6 @@
-f481205f7c7b313ec10faf57cacf63f7 *DESCRIPTION
+d4a77dea76a11a26e8a90a02f7a6b3c9 *DESCRIPTION
 11201ffc83bf486ae68dc972aac9ad65 *NAMESPACE
-08d3d92626351e65cec328cbb3b005f9 *NEWS.md
+e2d65831fb09b8a96c98fbbe22b2d621 *NEWS.md
 6a11183a8d2360a26de79a31e6ef5eb6 *R/BME.R
 867a41f2022200934e89e52038ea79ae *R/BMORS.R
 3c5653d32a217d935ebcd9ac7825921a *R/BMORSEnv.R
@@ -66,10 +66,10 @@ ca3e0bdfac4c2ee534571f3170b9d8fc *man/summary.BMECV.Rd
 912d08393d618d545f55fff7f4f272de *man/summary.BMORSCV.Rd
 37255c94dae22e68e024047322f9ef03 *man/summary.BMORSENV.Rd
 6c3bc8eb88fcebb73228cebb793ff696 *man/summary.BMTMECV.Rd
-1e2f38ce3335a1c47378e492a3c066a0 *src/Makevars
+38f5043c0bfe672d556afc4cbbb6b72c *src/Makevars
 0dd89f6568dd34090b6ffb3d3483fa19 *src/Makevars.win
 73532d4d66bfa86f0d3fe872e15c9c98 *src/RcppExports.cpp
 69a458d0546386b3fd3711daf869d7e5 *src/Sample_IW.cpp
 398bd34726c2269d7bcd1ed94f5ed2a3 *tests/testthat.R
-3fec8572136317e1c8c2f03442f2b8b9 *tests/testthat/Rplots.pdf
+db3efb4ed097c07af0a7829add2a8439 *tests/testthat/Rplots.pdf
 2bb1c6a35f5b0b500caa2ddf2b306498 *tests/testthat/test.R

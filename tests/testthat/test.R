@@ -49,7 +49,7 @@ test_that('RandomPartition',{
   expect_is(RP_Test, 'CrossValidation')
   expect_is(RP_Test$CrossValidation_list, 'list')
   expect_output(str(RP_Test$CrossValidation_list), 'List of 10')
-  expect_is(RP_Test$Environments, 'factor')
+  expect_is(RP_Test$Environments, 'character')
   expect_length(RP_Test$Environments, length(pheno$Env))
   expect_equal(unique(RP_Test$Environments), unique(pheno$Env))
   expect_is(RP_Test$Traits, 'character')
@@ -69,7 +69,7 @@ test_that('RandomPartition',{
   expect_is(RP_Test2$Environments, 'factor')
   expect_length(RP_Test2$Environments, length(pheno$Env))
   expect_equal(unique(RP_Test2$Environments), unique(pheno$Env))
-  expect_is(RP_Test2$Traits, 'factor')
+  expect_is(RP_Test2$Traits, 'character')
   expect_length(RP_Test2$Traits, length(pheno$Env))
 })
 

@@ -1,12 +1,12 @@
-071155270378ac9a4dcc894fa10740cd *DESCRIPTION
-11201ffc83bf486ae68dc972aac9ad65 *NAMESPACE
-5b279ba4fd32f180bbf21b23567d0183 *NEWS.md
+6edf879031a4e6854b7017469095c7b9 *DESCRIPTION
+8f2ef05b416e7a6311a28d4861539230 *NAMESPACE
+d4898f14eaf0c6c79773d517a4f52da1 *NEWS.md
 6a11183a8d2360a26de79a31e6ef5eb6 *R/BME.R
 867a41f2022200934e89e52038ea79ae *R/BMORS.R
 3c5653d32a217d935ebcd9ac7825921a *R/BMORSEnv.R
 e45bab8dcee222a5d6a90a9e44da5cd7 *R/BMTME.R
-d1ebaa3dae9e0b0adc08acefa75dc852 *R/BMTME_Package.R
-df1c23c24dcfbcac64cc13ea415f5efc *R/RandomPartition.R
+58db9ff640531a7db0a6f19ea658c232 *R/BMTME_Package.R
+ee2652f5f15c664b02cc2b04e55b557b *R/RandomPartition.R
 9b1cf6f100a8000c7ead5fa647d12253 *R/RcppExports.R
 fd2b5880d91b3221027c1caa74b8e1b0 *R/cholesky.R
 6d871e2f33c9671e2abf29e8cdfa71f6 *R/datasets.R
@@ -70,4 +70,5 @@ e173620d0c43f720b72de01eb01af550 *man/summary.BMTMECV.Rd
 73532d4d66bfa86f0d3fe872e15c9c98 *src/RcppExports.cpp
 69a458d0546386b3fd3711daf869d7e5 *src/Sample_IW.cpp
 398bd34726c2269d7bcd1ed94f5ed2a3 *tests/testthat.R
-2061d6e0ef2a7be4c4d1f54c16128a6c *tests/testthat/test.R
+de9c80c1deb20e7305d3756776fe6498 *tests/testthat/Rplots.pdf
+a7deb25f7e66d631cf9316388cd03d13 *tests/testthat/test.R
